@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form onsubmit="saveToLocalStorage(event)">
+        <label>Candy Name : </label>
+        <input type="text" name="name" required/>
+        <label>Description : </label>
+        <input type="text" name="desc" required/>
+        <label>Price : </label>
+        <input type="number" name="price" required/>
+        
+        <label>Quantity : </label>
+        <input type="number" name="quant"/>
+        <button>Add Item</button>
+    </form>
+    <ul id='list'></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+    <script>
+        function saveToLocalStorage(event)
+        {
+            event.preventDefault();
+            const name = event.target.name.value;
+            const desc = event.target.desc.value;
+            const price = event.target.price.value;
+            const quant = event.target.quant.value;
+
+            const obj = {
+                name,
+                desc,
+                price,
+                quant
+            }
+           axios.post("https://crudcrud.com/api/553cedb0073348b8bd3141b94dbc23af/appointment",obj)
+           .then((res) => {
+            //console.log("SUCCESS");
+            showOutput(res.data);
+           })
+           .catch((err) => {
+            //console.log("ERROR");
+           })
+            localStorage.setItem(obj.email,JSON.stringify(obj));
+            //showOutput(obj);
+
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            axios.get('https://crudcrud.com/api/553cedb0073348b8bd3141b94dbc23af/appointment')
+            .then((res) => {
+
+                for(var i=0; i<res.data.length;i++)
+                {
+                    showOutput(res.data[i]);
+                }
+            })
+            .catch((err) => {
+                //console.log("Error");
+            })
+        })
+        function showOutput(obj)
+        {
+            //console.log(obj.id);
+            const parent = document.getElementById('list');
+            const child = document.createElement('li');
+            child.textContent = obj.name+' - '+obj.desc+' - '+obj.price+" - "+obj.quant;
+
+           
+
+            const buy1 = document.createElement('input');
+            buy1.type = "button";
+            buy1.value = "Buy 1";
+
+            buy1.onclick = () => {
+                //localStorage.removeItem(obj.name)
+                //parent.removeChild(child);
+                if(obj.quant>1)
+                {
+                    obj.quant=obj.quant-1;
+                }
+                else
+                {
+                    obj.quant=0;
+                }
+                axios.put(`https://crudcrud.com/api/553cedb0073348b8bd3141b94dbc23af/appointment/${obj._id}`,{
+                    name : obj.name,
+                    desc : obj.desc,
+                    price : obj.price,
+                    quant : obj.quant
+                })
+                .then((res) => {
+                    //console.log("Deleted");
+                    
+                })
+                .catch((err) => {
+                    //console.log(err);
+                })
+                
+            }
+
+            const buy2 = document.createElement('input');
+            buy2.type = "button";
+            buy2.value = "Buy2";
+
+            buy2.onclick = () => {
+
+                if(obj.quant>2)
+                {
+                    obj.quant=obj.quant-2;
+                }
+                else
+                {
+                    obj.quant=0;
+                }
+                axios.put(`https://crudcrud.com/api/553cedb0073348b8bd3141b94dbc23af/appointment/${obj._id}`,{
+                    name : obj.name,
+                    desc : obj.desc,
+                    price : obj.price,
+                    quant : obj.quant
+                })
+                .then((res) => {
+                    //console.log("Deleted");
+                })
+                .catch((err) => {
+                    //console.log(err);
+                })
+            }
+            const buy3 = document.createElement('input');
+            buy3.type = "button";
+            buy3.value = "Buy3";
+
+            buy3.onclick = () => {
+                if(obj.quant>3)
+                {
+                    obj.quant=obj.quant-3;
+                }
+                else
+                {
+                    obj.quant=0;
+                }
+                
+                axios.put(`https://crudcrud.com/api/553cedb0073348b8bd3141b94dbc23af/appointment/${obj._id}`,{
+                    name : obj.name,
+                    desc : obj.desc,
+                    price : obj.price,
+                    quant : obj.quant
+                })
+                .then((res) => {
+                    //console.log("Deleted");
+                })
+                .catch((err) => {
+                    //console.log(err);
+                })
+            }
+            
+
+            
+            child.appendChild(buy1);
+            child.appendChild(buy2);
+            child.appendChild(buy3);
+            parent.appendChild(child);
+
+            
+        }
+        
+    </script>
+    
+</body>
+</html>
